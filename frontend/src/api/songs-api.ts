@@ -8,7 +8,7 @@ export class SongAPI {
   private headers = new HttpHeaders({
     'Content-Type': 'application/json',
   });
-  private baseUrl = 'localhost:3000';
+  private baseUrl = 'http://localhost:3000';
 
   public constructor(private readonly http: HttpClient) {}
 
