@@ -13,6 +13,7 @@ export class SongAPI {
   public constructor(private readonly http: HttpClient) {}
 
   public getSong(song: string) {
+    console.log('Entrou no getSong');
     return this.http
       .get(`${this.baseUrl}/songs/${song}`, {
         headers: this.headers,

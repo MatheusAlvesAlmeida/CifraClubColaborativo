@@ -17,10 +17,10 @@ const CIFRACLUB_SONG_ID = "2";
 /**
  * Receives a part of a song name and search for songs in CifraClub
  */
-app.get("/songs", async ({ query: { name } }, res) => {
-  console.log("Searching for songs with name: ", name);
+app.get("/songs/:name", async (req, res) => {
+  console.log("Searching for songs with name: ", req.params.name);
   const response = await axios.get(SEARCH_SONGS_API, {
-    params: { q: name },
+    params: { q: req.params.name },
   });
   const rawData = response.data;
 
@@ -52,7 +52,7 @@ app.get("/songs", async ({ query: { name } }, res) => {
           genre:
             response.data.artist &&
             response.data.artist.genre &&
-            response.data.artist.genre[0].name,
+            response.data.artist.genre[0],
         }),
         () => ({ ...song })
       );

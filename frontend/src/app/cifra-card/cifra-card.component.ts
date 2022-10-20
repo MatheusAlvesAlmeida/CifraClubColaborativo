@@ -8,7 +8,7 @@ import { AppFacade } from 'src/app/app-facade';
 })
 export class CifraCardComponent implements OnInit {
   constructor(private readonly appFacade: AppFacade) {
-    this.appFacade.getSong('Let it be').subscribe((response) => {
+    this.appFacade.getSong('Help').subscribe((response) => {
       console.log('ENTROU');
       console.log(response.toString());
     });
