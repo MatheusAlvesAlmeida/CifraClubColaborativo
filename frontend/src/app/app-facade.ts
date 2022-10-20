@@ -10,4 +10,7 @@ export class AppFacade {
   public getSong(song: string): Observable<Object> {
     return this.songAPI.getSong(song);
   }
+  getChord(song: any): Observable<string> {
+    return this.songAPI.getChord(song);
+  }
 }

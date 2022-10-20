@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { retry, map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, ObservableLike } from 'rxjs';
 
 @Injectable()
 export class SongAPI {
@@ -13,14 +13,24 @@ export class SongAPI {
   public constructor(private readonly http: HttpClient) {}
 
   public getSong(song: string) {
-    console.log('Entrou no getSong');
     return this.http
       .get(`${this.baseUrl}/songs/${song}`, {
         headers: this.headers,
       })
       .pipe(
         retry(3),
-        map((response) => response)
+        map((response: any) => response)
+      );
+  }
+  public getChord(song: any) {
+    console.log(song);
+    return this.http
+      .get(`${this.baseUrl}/chords/${song.artist.slug}/${song.slug}`, {
+        headers: this.headers,
+      })
+      .pipe(
+        retry(3),
+        map((response: any) => response)
       );
   }
 }
