@@ -8,10 +8,19 @@ import { CifraCardComponent } from './cifra-card/cifra-card.component';
 
 import { AppFacade } from './app-facade';
 import { SongAPI } from 'src/api/songs-api';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [AppComponent, CifraCardComponent],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatCardModule,
+  ],
   providers: [AppFacade, SongAPI],
   bootstrap: [AppComponent],
 })
