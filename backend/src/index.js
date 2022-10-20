@@ -5,6 +5,13 @@ const cors = require("cors");
 
 const app = express();
 
+const corsOptions = {
+  origin: "*",
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+
 const SEARCH_SONGS_API = "https://studiosolsolr-a.akamaihd.net/cc/h2/";
 const getChordsApi = (artist, song) =>
   `https://www.cifraclub.com.br/${artist}/${song}/imprimir.html`;
@@ -17,7 +24,8 @@ const CIFRACLUB_SONG_ID = "2";
 /**
  * Receives a part of a song name and search for songs in CifraClub
  */
-app.get("/songs/:name", async (req, res) => {
+// Accepts CORS requests from any origin
+app.get("/songs/:name", cors(), async (req, res) => {
   console.log("Searching for songs with name: ", req.params.name);
   const response = await axios.get(SEARCH_SONGS_API, {
     params: { q: req.params.name },
