@@ -26,7 +26,6 @@ const CIFRACLUB_SONG_ID = "2";
  */
 // Accepts CORS requests from any origin
 app.get("/songs/:name", cors(), async (req, res) => {
-  console.log("Searching for songs with name: ", req.params.name);
   const response = await axios.get(SEARCH_SONGS_API, {
     params: { q: req.params.name },
   });
@@ -66,7 +65,17 @@ app.get("/songs/:name", cors(), async (req, res) => {
       );
     });
   const songs = await Promise.all(finalResult);
-  res.json(songs);
+  // Use songs to get the chords and return the final result
+  try {
+    const response = await axios.get(
+      getChordsApi(songs[0].artist.slug, songs[0].slug)
+    );
+    const $ = cheerio.load(response.data);
+    $(".tablatura").remove();
+    return res.json($("pre").html());
+  } catch (e) {
+    return res.status(404).json({});
+  }
 });
 
 /**
