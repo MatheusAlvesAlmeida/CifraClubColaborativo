@@ -8,10 +8,13 @@ api = Api(app)
 
 class CipherFormatter(Resource):
     def get(self):
-        cipher = request.get_data().decode('utf-8')
-        formatted_cipher = cyphet_formatter(cipher)
-        print(formatted_cipher)
-        return formatted_cipher
+        print('GET request received')
+        print(request.get_data())
+        cipher_in = request.get_data().decode('utf-8')
+        print(cipher_in)
+        cipher_formatted = cipher_formatter(cipher_in)
+        # print(cipher_formatted)
+        return cipher_formatted
 
 
 api.add_resource(CipherFormatter, '/cipher')

@@ -67,12 +67,16 @@ app.get("/songs/:name", cors(), async (req, res) => {
   const songs = await Promise.all(finalResult);
   // Use songs to get the chords and return the final result
   try {
+    console.log("sending request to flask server");
     const response = await axios.get(
       getChordsApi(songs[0].artist.slug, songs[0].slug)
     );
     const $ = cheerio.load(response.data);
     $(".tablatura").remove();
-    return res.json($("pre").html());
+    const html = await axios.get("http://localhost:5000/cipher", {
+      data: { html: $.html() },
+    });
+    return res.json({ html: html.data });
   } catch (e) {
     return res.status(404).json({});
   }
