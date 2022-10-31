@@ -1,0 +1,3 @@
+* xref:index.adoc[About]
+* xref:writing.adoc[]
+* xref:dev.adoc[]
