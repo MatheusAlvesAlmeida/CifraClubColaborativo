@@ -25,28 +25,23 @@ interface Genre {
   templateUrl: './cifra-card.component.html',
   styleUrls: ['./cifra-card.component.css'],
 })
-export class CifraCardComponent implements OnInit {
+export class CifraCardComponent {
   song: Array<Song> = [];
   chord: any;
-  songName = '';
-  @ViewChild(SearchBarComponent) child: any;
+  @Input() songToSearch: string = '';
 
   constructor(private readonly appFacade: AppFacade) {}
-  ngOnInit(): void {
-    // if (this.songName) {
-      this.appFacade.getSong('anunciacao').subscribe((response) => {
-        this.song = Object.values(response)[0];
-        this.appFacade.getChord(this.song).subscribe((response) => {
-          this.chord = response;
-          console.log(this.chord);
-        });
-      });
-    // }
+
+  ngOnChanges() {
+    this.searchSong();
   }
 
-  // ngAfterViewInit() {
-  //   if (this.child.songName) {
-  //     console.log(this.child.songName);
-  //   }
-  // }
+  searchSong() {
+    this.appFacade.getSong(this.songToSearch).subscribe((response) => {
+      this.song = Object.values(response)[0];
+      this.appFacade.getChord(this.song).subscribe((response) => {
+        this.chord = response;
+      });
+    });
+  }
 }
