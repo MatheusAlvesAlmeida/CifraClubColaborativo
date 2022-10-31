@@ -33,19 +33,20 @@ export class CifraCardComponent implements OnInit {
 
   constructor(private readonly appFacade: AppFacade) {}
   ngOnInit(): void {
-    if (this.songName) {
+    // if (this.songName) {
       this.appFacade.getSong('anunciacao').subscribe((response) => {
         this.song = Object.values(response)[0];
         this.appFacade.getChord(this.song).subscribe((response) => {
           this.chord = response;
+          console.log(this.chord);
         });
       });
-    }
+    // }
   }
 
-  ngAfterViewInit() {
-    if (this.child.songName) {
-      console.log(this.child.songName);
-    }
-  }
+  // ngAfterViewInit() {
+  //   if (this.child.songName) {
+  //     console.log(this.child.songName);
+  //   }
+  // }
 }

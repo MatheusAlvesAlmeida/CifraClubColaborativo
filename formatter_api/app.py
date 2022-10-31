@@ -8,13 +8,12 @@ api = Api(app)
 
 class CipherFormatter(Resource):
     def get(self):
-        cipher_in = request.get_data().decode('utf-8').replace("\\n", "\n")
+        cipher_in = request.get_data().decode('utf-8').replace('\\n', '\n')
         cipher_formatted = cipher_formatter(cipher_in)
         return cipher_formatted
 
 
 api.add_resource(CipherFormatter, '/cipher')
-
 
 if __name__ == "__main__":
     app.run(debug=True)

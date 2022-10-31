@@ -23,7 +23,6 @@ export class SongAPI {
       );
   }
   public getChord(song: any) {
-    console.log(song);
     return this.http
       .get(`${this.baseUrl}/chords/${song.artist.slug}/${song.slug}`, {
         headers: this.headers,

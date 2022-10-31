@@ -65,21 +65,7 @@ app.get("/songs/:name", cors(), async (req, res) => {
       );
     });
   const songs = await Promise.all(finalResult);
-  // Use songs to get the chords and return the final result
-  try {
-    console.log("sending request to flask server");
-    const response = await axios.get(
-      getChordsApi(songs[0].artist.slug, songs[0].slug)
-    );
-    const $ = cheerio.load(response.data);
-    $(".tablatura").remove();
-    const html = await axios.get("http://localhost:5000/cipher", {
-      data: { html: $.html() },
-    });
-    return res.json({ html: html.data });
-  } catch (e) {
-    return res.status(404).json({});
-  }
+  res.json(songs);
 });
 
 /**
@@ -90,11 +76,19 @@ app.get("/chords/:artist/:song", async ({ params: { artist, song } }, res) => {
     const response = await axios.get(getChordsApi(artist, song));
     const $ = cheerio.load(response.data);
     $(".tablatura").remove();
-    return res.json($("pre").html());
+    const formattedChord = await getFormattedChord($("pre").html());
+    return res.json(formattedChord);
   } catch (e) {
     return res.status(404).json({});
   }
 });
+
+const getFormattedChord = async (chord) => {
+  const formatedChord = await axios.get("http://localhost:5000/cipher", {
+    data: chord,
+  });
+  return formatedChord.data;
+};
 
 /**
  * Recover data from an specific artist by its slug (we are using the genre)

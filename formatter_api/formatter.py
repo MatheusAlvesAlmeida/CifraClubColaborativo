@@ -36,7 +36,7 @@ def cipher_formatter(cipher_in):
 
     cipher_formatted = '<!DOCTYPE html>\n<meta charset="utf-8">\n<base href="https://dtinth-chordbook.netlify.app/">\n<script src="lib/entry.js"></script>\n<pre id="src">' + cipher_formatted + "</pre>"
 
-    # f = open("cipherout.txt", "w")
+    # f = open("cipherout.html", "w")
     # f.write(cipher_formatted)
     # f.close()
 
