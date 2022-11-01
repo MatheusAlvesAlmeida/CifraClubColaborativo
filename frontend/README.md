@@ -1,4 +1,4 @@
-# dtinth’s interactive chordbook
+# CifraShare
 
 A simple interactive chordbook library web application.
 

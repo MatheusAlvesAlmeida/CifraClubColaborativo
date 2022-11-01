@@ -4,7 +4,6 @@ const cheerio = require("cheerio");
 const cors = require("cors");
 
 const app = express();
-const { spawn } = require("child_process");
 
 const corsOptions = {
   origin: "*",

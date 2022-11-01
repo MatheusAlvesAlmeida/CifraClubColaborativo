@@ -25,6 +25,15 @@ const videoState = {
   seekTo(t) {},
 }
 
+function getChord() {
+  fetch('http://localhost:3000/chords/the-beatles/help')
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data)
+      return data
+    })
+}
+
 /**
  * Parses the chordchart source.
  */
@@ -503,46 +512,50 @@ if (window.location.search.match(/postToParent/) && window.parent) {
     template: `<div>Sent new source!</div>`,
   })
 } else {
-  var data = parseData(source)
-  const reloadIframeSet = new Set()
-  App = new Vue({
-    el: '#app',
-    data: { song: data },
-    template: `<chordbook-app :song="song"></chordbook-app>`,
-  })
-  window.addEventListener('message', (e) => {
-    if (e.data && e.data.type === 'postToParent') {
-      try {
-        const data = parseData(e.data.source)
-        App.song = data
-      } catch (e) {
-        console.error(e)
-        alert(e)
-      } finally {
-        for (const iframe of [...reloadIframeSet]) {
-          iframe.remove()
+  fetch('http://localhost:3000/chords/the-beatles/hey-jude')
+    .then((res) => res.json())
+    .then((data) => {
+      var data = parseData(data)
+      const reloadIframeSet = new Set()
+      App = new Vue({
+        el: '#app',
+        data: { song: data },
+        template: `<chordbook-app :song="song"></chordbook-app>`,
+      })
+      window.addEventListener('message', (e) => {
+        if (e.data && e.data.type === 'postToParent') {
+          try {
+            const data = parseData(e.data.source)
+            App.song = data
+          } catch (e) {
+            console.error(e)
+            alert(e)
+          } finally {
+            for (const iframe of [...reloadIframeSet]) {
+              iframe.remove()
+            }
+          }
         }
-      }
-    }
-  })
-  if (isDevMode) {
-    window.addEventListener('keydown', (e) => {
-      if (
-        e.keyCode === 'R'.charCodeAt(0) &&
-        !e.ctrlKey &&
-        !e.altKey &&
-        !e.metaKey
-      ) {
-        e.preventDefault()
-        const iframe = document.createElement('iframe')
-        iframe.setAttribute('style', 'position: fixed; top: 0; left: 0')
-        iframe.src = location.href.replace(
-          /\?[^]*|$/,
-          '?postToParent=' + Date.now()
-        )
-        document.body.appendChild(iframe)
-        reloadIframeSet.add(iframe)
+      })
+      if (isDevMode) {
+        window.addEventListener('keydown', (e) => {
+          if (
+            e.keyCode === 'R'.charCodeAt(0) &&
+            !e.ctrlKey &&
+            !e.altKey &&
+            !e.metaKey
+          ) {
+            e.preventDefault()
+            const iframe = document.createElement('iframe')
+            iframe.setAttribute('style', 'position: fixed; top: 0; left: 0')
+            iframe.src = location.href.replace(
+              /\?[^]*|$/,
+              '?postToParent=' + Date.now()
+            )
+            document.body.appendChild(iframe)
+            reloadIframeSet.add(iframe)
+          }
+        })
       }
     })
-  }
 }
