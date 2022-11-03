@@ -1,5 +1,5 @@
 document.write(`
-<title>dtinth’s interactive chordbook</title>
+<title>CifraShare</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link
@@ -9,8 +9,8 @@ document.write(`
   crossorigin="anonymous"
 />
 <link rel="stylesheet" href="lib/style.css" />
-<div id="app" class="container">
-  <h2>Loading chordbook...</h2>
+<div id="app" class="container" style="margin: 2rem 0">
+  <h2>Bem vindo(a) ao CifraShare</h2>
 </div>
 <script defer src="vendor/sharp11-harmony.js?v=1564040417552"></script>
 <script defer src="https://unpkg.com/vue@2.6.10/dist/vue.js"></script>
