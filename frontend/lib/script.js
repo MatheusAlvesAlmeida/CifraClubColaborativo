@@ -1,9 +1,12 @@
 /* global Vue VueYouTubeEmbed sharp11 App */
 Vue.use(VueYouTubeEmbed.default)
 
-var isDevMode = location.host !== 'dtinth-chordbook.netlify.com'
+// const isDevMode = location.host !== 'dtinth-chordbook.netlify.com'
+const isDevMode = false
 
-var source = document.querySelector('#src').textContent
+const input = document.getElementById('searchBar')
+const button = document.getElementById('submitButton')
+button.addEventListener('click', searchChord)
 document.querySelector('#src').remove()
 
 /**
@@ -25,13 +28,42 @@ const videoState = {
   seekTo(t) {},
 }
 
-function getChord() {
-  fetch('http://localhost:3000/chords/the-beatles/help')
-    .then((res) => res.json())
-    .then((data) => {
-      console.log(data)
-      return data
-    })
+function searchChord() {
+  if (input.value !== '') {
+    fetch(`http://localhost:3000/songs/${input.value}`)
+      .then((res) => res.json())
+      .then((song) => {
+        fetch(
+          `http://localhost:3000/chords/${song[0].artist.slug}/${song[0].slug}`
+        )
+          .then((res) => res.json())
+          .then((chord) => {
+            const data = parseData(chord)
+            const reloadIframeSet = new Set()
+            App = new Vue({
+              el: '#app',
+              data: { song: data },
+              template: `<chordbook-app :song="song"></chordbook-app>`,
+            })
+            window.addEventListener('message', (e) => {
+              if (e.data && e.data.type === 'postToParent') {
+                try {
+                  const data = parseData(e.data.source)
+                  App.song = data
+                } catch (e) {
+                  console.error(e)
+                  alert(e)
+                } finally {
+                  for (const iframe of [...reloadIframeSet]) {
+                    iframe.remove()
+                  }
+                }
+              }
+            })
+          })
+        document.querySelector('.container-fluid').remove()
+      })
+  }
 }
 
 /**
@@ -198,7 +230,7 @@ Vue.component('chordbook-app', {
     }
     this.$watch(
       () => this.song.title,
-      (title) => (document.title = `${title} — dtinth’s interactive chordbook`),
+      (title) => (document.title = `CifraShare`),
       { immediate: true }
     )
     requestAnimationFrame(frame)
@@ -230,7 +262,7 @@ Vue.component('chordbook-app', {
   },
   template: `<div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <span class="navbar-brand">dtinth’s interactive chordbook <small class="text-muted" v-if="devMode">dev mode</small></span>
+      <span class="navbar-brand">CifraShare <small class="text-muted" v-if="devMode">dev mode</small></span>
     </nav>
     <div class="container py-4">
       <h1 class="h4">{{ song.title }}</h1>
@@ -511,51 +543,4 @@ if (window.location.search.match(/postToParent/) && window.parent) {
     el: '#app',
     template: `<div>Sent new source!</div>`,
   })
-} else {
-  fetch('http://localhost:3000/chords/the-beatles/hey-jude')
-    .then((res) => res.json())
-    .then((data) => {
-      var data = parseData(data)
-      const reloadIframeSet = new Set()
-      App = new Vue({
-        el: '#app',
-        data: { song: data },
-        template: `<chordbook-app :song="song"></chordbook-app>`,
-      })
-      window.addEventListener('message', (e) => {
-        if (e.data && e.data.type === 'postToParent') {
-          try {
-            const data = parseData(e.data.source)
-            App.song = data
-          } catch (e) {
-            console.error(e)
-            alert(e)
-          } finally {
-            for (const iframe of [...reloadIframeSet]) {
-              iframe.remove()
-            }
-          }
-        }
-      })
-      if (isDevMode) {
-        window.addEventListener('keydown', (e) => {
-          if (
-            e.keyCode === 'R'.charCodeAt(0) &&
-            !e.ctrlKey &&
-            !e.altKey &&
-            !e.metaKey
-          ) {
-            e.preventDefault()
-            const iframe = document.createElement('iframe')
-            iframe.setAttribute('style', 'position: fixed; top: 0; left: 0')
-            iframe.src = location.href.replace(
-              /\?[^]*|$/,
-              '?postToParent=' + Date.now()
-            )
-            document.body.appendChild(iframe)
-            reloadIframeSet.add(iframe)
-          }
-        })
-      }
-    })
 }
